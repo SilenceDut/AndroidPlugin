@@ -11,8 +11,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 
 import dalvik.system.DexClassLoader;
+import dalvik.system.PathClassLoader;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -21,18 +23,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        String dexOrApkPath = Environment.getExternalStorageDirectory() + "/androidplugin/app.apk";
-        String copyPath = Environment.getExternalStorageDirectory() + "/androidplugin/new.dex";
+        String dexOrApkPath = Environment.getExternalStorageDirectory() + "/pathclassloder.apk";
 
         Context context=getApplicationContext();//获取Context对象；
         File dexOutputDir = context.getDir("dex", Context.MODE_PRIVATE);
-        ClassLoader parentClassLoader = ClassLoader.getSystemClassLoader();
-        ClassLoader dexClassLoader = new DexClassLoader(dexOrApkPath, dexOutputDir.getAbsolutePath(), null,parentClassLoader);
 
+
+        //art 可以加载,dalvik不可以
+        ClassLoader dexClassLoader = new PathClassLoader(dexOrApkPath, null,getClassLoader());
+
+
+        final String vmVersion = System.getProperty("java.vm.version");
+        boolean isArt = vmVersion != null && vmVersion.startsWith("2");
+
+        Log.i(TAG,"isArt:"+isArt);
         try {
 
-            Class cls = dexClassLoader.loadClass("com.silencedut.uirelated.MainActivity");
-            cls.getSimpleName();
+            Class cls = dexClassLoader.loadClass("com.silencedut.daynighttogglebuttonsample.MainActivity");
+            Log.i(TAG,"cls.getSimpleName():"+cls.getName());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }

@@ -1,5 +1,11 @@
 #Android 动态加载
 ##Android动态加载之ClassLoader详解
 Dalvik虚拟机如同其他Java虚拟机一样，在运行程序时首先需要将对应的类加载到内存中。而在Java标准的虚拟机中，类加载可以从class文件中读取，也可以是其他形式的二进制流。因此，我们常常利用这一点，在程序运行时手动加载Class，从而达到代码动态加载执行的目的。
-只不过Android平台上虚拟机运行的是Dex字节码,一种对class文件尽心优化的产物,传统Class文件是一个Java源码文件会生成一个.Class文件，而Android是把所有Class文件进行合并，优化，然后生成一个最终的class.dex,目的是把不同class文件重复的东西只需保留一份,如果我们的Android应用不进行分dex处理,最后一个应用的apk只会有一个dex文件。
+只不过Android平台上虚拟机运行的是Dex字节码,一种对class文件优化的产物,传统Class文件是一个Java源码文件会生成一个.class文件，而Android是把所有Class文件进行合并，优化，然后生成一个最终的class.dex,目的是把不同class文件重复的东西只需保留一份,如果我们的Android应用不进行分dex处理,最后一个应用的apk只会有一个dex文件。
 ###Android平台的ClassLoader
+Android中类加载器有BootClassLoader,URLClassLoader,PathClassLoader,DexClassLoader,BaseDexClassLoader,等都最终继承自java.lang.ClassLoader。
+在ClassLoader中最重要的方法是loadClass(String name)
+和java虚拟机中不同的是BootClassLoader是ClassLoader内部类,由java代码实现而不是c++实现,是Android平台上所有ClassLoader的最终parent,这个内部类是包内可见,所以我们没法使用。
+URLClassLoader 只能用于加载jar文件，但是由于 dalvik 不能直接识别jar，所以在 Android 中无法使用这个加载器。
+上面说dalvik不能直接识别jar,DexClassLoader却可以加载jar文件,这难道不矛盾吗?其实在BaseDexClassLoader里对".jar",".zip",".apk",".dex"后缀的文件最后都会生成一个对应的dex文件,所以最终处理的还是dex文件
+PathClassLoader,DexClassLoader继承自BaseDexClassLoader,是Android中最常见类加载器,其中的主要逻辑
