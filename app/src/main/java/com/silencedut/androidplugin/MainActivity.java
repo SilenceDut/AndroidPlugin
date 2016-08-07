@@ -28,12 +28,11 @@ public class MainActivity extends AppCompatActivity {
         Context context=getApplicationContext();//获取Context对象；
         File dexOutputDir = context.getDir("dex", Context.MODE_PRIVATE);
 
-
         //art 可以加载,dalvik不可以
         ClassLoader dexClassLoader = new PathClassLoader(dexOrApkPath, null,getClassLoader());
 
-
         final String vmVersion = System.getProperty("java.vm.version");
+
         boolean isArt = vmVersion != null && vmVersion.startsWith("2");
 
         Log.i(TAG,"isArt:"+isArt);
