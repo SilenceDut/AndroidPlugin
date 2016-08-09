@@ -1,11 +1,17 @@
 package com.silencedut.androidplugin;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+
+import com.ryg.dynamicload.DLBasePluginActivity;
+import com.ryg.dynamicload.DLBasePluginFragmentActivity;
+import com.ryg.dynamicload.internal.DLIntent;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,13 +22,22 @@ import java.lang.reflect.Method;
 import dalvik.system.DexClassLoader;
 import dalvik.system.PathClassLoader;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends DLBasePluginFragmentActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        findViewById(R.id.first).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DLIntent intent = new DLIntent(getPackageName(),SecondActivity.class);
+                startPluginActivityForResult(intent, 0);
+            }
+        });
+
         String dexOrApkPath = Environment.getExternalStorageDirectory() + "/pathclassloder.apk";
 
         Context context=getApplicationContext();//获取Context对象；

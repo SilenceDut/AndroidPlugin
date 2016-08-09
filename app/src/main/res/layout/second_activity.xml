@@ -9,10 +9,10 @@
     tools:context="com.silencedut.androidplugin.MainActivity">
 
     <TextView
-        android:id="@+id/first"
+        android:id="@+id/second"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Plugin Activity"
+        android:text="Second Activity"
         />
 
 </LinearLayout>
